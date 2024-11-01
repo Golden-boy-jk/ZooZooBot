@@ -3,3 +3,17 @@
 В конце викторины бот даёт выбрать несколько вариантов(обратиться в поодержку, написать отзыв, перезапустить викторину или поделиться ссылкой)
 Возможно расширить функционал бота, проект структурирован (модульная организациия)
 Буду рад земечаниям и улучшениям =)
+
+С помощью этого небольшого кода можно добавить поддержку в VK, но мне код уже показался грамоздким, не судите строго.
+import requests
+
+def post_to_vk(message):
+    url = 'https://api.vk.com/method/wall.post'
+    params = {
+        'owner_id': 'YOUR_GROUP_ID',
+        'message': message,
+        'access_token': 'YOUR_ACCESS_TOKEN',
+        'v': '5.131'
+    }
+    response = requests.post(url, params=params)
+    return response.json()
