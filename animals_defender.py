@@ -80,15 +80,16 @@ last_result_text = None
 async def start_quiz(message: types.Message):
     keyboard = ReplyKeyboardMarkup(keyboard=[[KeyboardButton(text="Начать викторину")]], resize_keyboard=True)
     await message.reply(
-        "Приветствую тебя будущий защитник планеты и животных! "
-        "Узнай своё тотемное животное в Московском зоопарке! Готовы начать?",
+        "Добро пожаловать, храбрый защитник нашей планеты! "
+        "Готов ли ты узнать, какое тотемное животное скрыто в твоей душе? "
+        "Давай погрузимся в удивительный мир Московского зоопарка!",
         reply_markup=keyboard
     )
 
 # Обработка нажатия на "Начать викторину"
 @router.message(F.text == "Начать викторину")
 async def question_one(message: types.Message):
-    question = "Какой у вас темперамент?"
+    question = "Давай раскроем тайны твоего темперамента! Как бы ты описал свою внутреннюю сущность"
     options = ["Спокойный", "Энергичный", "Добрый и немного стеснительный", "Строгий", "Отзывчивый",
                "Общительный", "Дружелюбный", "Жизнерадостный", "Оптимистичный", "Решительный",
                "Настойчивый", "Целеустремлённый", "Терпеливый", "Внимательный", "Тактичный",
@@ -118,10 +119,12 @@ async def question_one(message: types.Message):
                "Изобретательный", "Сообразительный", "Любознательный", "Чувствительный",
                "Эмоциональный", "Впечатлительный"}))
 async def question_two(message: types.Message):
-    question = "Какую еду вы предпочитаете?"
-    options = ["Фрукты и овощи", "Мясо и рыба", "Сладости и орехи", "Люблю есть много зелени",
-               "Я не ем, а грызу гранит", "Предпочитаю деревья", "Иногда хочется экзотики(жучки и червячки)",
-               "Хрум-хрум", "Молоко и простоквашу"]
+    question = "Представь, что ты в гастрономическом раю! Какие лакомства радуют твой вкус"
+    options = ["Сладкие дары тропиков", "Зеленые спутники фруктов" "Мясные наслаждения и морские деликатесы",
+               "Сладкие искушения и хрустящие лакомства", "Питаюсь свежестью зеленых просторов",
+               "Я не ем, а грызу гранит", "Мое сердце отдано древесным блюдам",
+               "Иногда хочется экзотики(жучки и червячки)",
+               "Хрум-хрум", "Нежные дары молочного королевства"]
     keyboard = []
     for i in range(0, len(options), 2):
         row = []
@@ -138,9 +141,11 @@ async def question_two(message: types.Message):
     await message.reply(question, reply_markup=keyboard_markup)
 
 # Завершение викторины и вывод результата с изображением
-@router.message(F.text.in_({"Фрукты и овощи", "Мясо и рыба", "Сладости и орехи", "Люблю есть много зелени",
-               "Я не ем, а грызу гранит", "Предпочитаю деревья", "Иногда хочется экзотики(жучки и червячки)",
-               "Хрум-хрум", "Молоко и простоквашу"}))
+@router.message(F.text.in_({"Сладкие дары тропиков", "Зеленые спутники фруктов" "Мясные наслаждения и морские деликатесы",
+               "Сладкие искушения и хрустящие лакомства", "Питаюсь свежестью зеленых просторов",
+               "Я не ем, а грызу гранит", "Мое сердце отдано древесным блюдам",
+               "Иногда хочется экзотики(жучки и червячки)",
+               "Хрум-хрум", "Нежные дары молочного королевства"}))
 async def show_result(message: types.Message):
     global last_animal, last_result_text
     # Случайный выбор тотемного животного и его изображение и информация
@@ -148,22 +153,24 @@ async def show_result(message: types.Message):
     image_url = animal_info["image"]
     info_url = animal_info["info_url"]
 
-    last_result_text = (f"Ваше тотемное животное – {last_animal}! "
-                        f"Вы энергичный и независимый, как {last_animal}. Цените семью и друзей.\n\n"
+    last_result_text = (f"Твое тотемное животное – {last_animal}! "
+                        f"Вы энергичный и независимый, как {last_animal}. "
+                        f"Ты обладаешь энергией и независимостью, словно это великолепное создание. "
+                        f"Ты ценишь близость с родными и дружбу, как истинный защитник природы!.\n\n"
                         f"Узнать больше о {last_animal}: {info_url}")
 
     keyboard = ReplyKeyboardMarkup(
         keyboard=[
             [
                 KeyboardButton(text="Поделиться в социальных сетях"),
-                KeyboardButton(text="Связаться с сотрудником зоопарка")
+                KeyboardButton(text="Намекнуть сотруднику Zоопарка")
             ],
             [
                 KeyboardButton(text="Попробовать ещё раз?"),
                 KeyboardButton(text="Узнать больше о программе опеки")
             ],
             [
-                KeyboardButton(text="Оставить отзыв")
+                KeyboardButton(text="Оставить отZооВ")
             ]
         ],
         resize_keyboard=True
@@ -184,17 +191,18 @@ async def share_result(message: types.Message):
     )
 
 # Связаться с сотрудником зоопарка
-@router.message(F.text == "Связаться с сотрудником зоопарка")
+@router.message(F.text == "Намекнуть сотруднику Zоопарка")
 async def contact_staff(message: types.Message):
     global last_result_text
     result_text = last_result_text if last_result_text else "Результат не найден."
     await message.reply(
-        "Для связи с сотрудником Московского зоопарка, "
-        "вы можете написать на support@moscowzoo.ru или позвонить по телефону +7 (495) 123-45-67. "
+        "Для связи с сотрудником Московского Zоопарка, "
+        "вы можете написать на support@moscowzoo.ru или помяукать по телефону +7 (495) 123-45-67."
+        "Рычать и мычать можно, главное найти общий язык "
         f"Ваш результат: {result_text}"
     )
 
-@router.message(F.text == "Оставить отзыв")
+@router.message(F.text == "Оставить отZooВ")
 async def collect_feedback(message: types.Message):
     await message.reply(
         "Мы всегда стремимся улучшить ваш опыт! "
@@ -209,6 +217,6 @@ async def care_info(message: types.Message):
                         "Узнайте больше на сайте: https://moscowzoo.ru/about/guardianship")
 
 # Попробовать ещё раз - перезапуск викторины
-@router.message(F.text == "Попробовать ещё раз?")
+@router.message(F.text == "Может ещё разок?")
 async def restart_quiz(message: types.Message):
     await start_quiz(message)
